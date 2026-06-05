@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Territorio Seguro — Propuesta Técnica y Financiera</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --rosa: #C8436A;
+    --rosa-claro: #F2D4DC;
+    --dorado: #B58A4A;
+    --dorado-claro: #F5ECD8;
+    --gris-oscuro: #1A1A1A;
+    --gris-medio: #4A4A4A;
+    --gris-suave: #7A7A7A;
+    --gris-linea: #E8E4DF;
+    --blanco: #FAFAF8;
+    --fondo: #F7F4F0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--blanco);
+    color: var(--gris-oscuro);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* PORTADA */
+  .portada {
+    background: var(--gris-oscuro);
+    color: white;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .portada::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -120px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    border: 1px solid rgba(200,67,106,0.2);
+  }
+  .portada::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -80px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    border: 1px solid rgba(181,138,74,0.2);
+  }
+  .portada-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative; z-index: 2;
+  }
+  .portada-logo-bloque {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.8;
+  }
+  .portada-logo-bloque strong {
+    display: block;
+    color: rgba(255,255,255,0.9);
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+  }
+  .portada-ref {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.35);
+    text-align: right;
+  }
+  .portada-centro {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative; z-index: 2;
+    padding: 40px 0;
+  }
+  .portada-categoria {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--rosa);
+    margin-bottom: 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .portada-categoria::before {
+    content: ''; width: 32px; height: 1px; background: var(--rosa);
+  }
+  .portada-titulo {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 7vw, 88px);
+    font-weight: 700;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .portada-titulo span { color: var(--rosa); }
+  .portada-subtitulo {
+    font-size: 18px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.65);
+    max-width: 560px;
+    margin-top: 20px;
+    line-height: 1.6;
+  }
+  .portada-slogan {
+    margin-top: 36px;
+    padding: 20px 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: rgba(255,255,255,0.5);
+  }
+  .portada-footer {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 40px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 32px;
+    position: relative; z-index: 2;
+  }
+  .portada-dato { display: flex; flex-direction: column; gap: 4px; }
+  .portada-dato .etiqueta { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+  .portada-dato .valor { font-size: 22px; font-weight: 500; color: white; font-family: 'Playfair Display', serif; }
+  .portada-dato .descripcion { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.4; }
+
+  /* LAYOUT */
+  .documento { max-width: 900px; margin: 0 auto; padding: 80px 60px; }
+  .seccion {
+    margin-bottom: 80px;
+    padding-bottom: 80px;
+    border-bottom: 1px solid var(--gris-linea);
+  }
+  .seccion:last-child { border-bottom: none; }
+  .num-seccion {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rosa);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .num-seccion::before { content: ''; width: 24px; height: 1px; background: var(--rosa); }
+  h2.titulo-seccion {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--gris-oscuro);
+    margin-bottom: 32px;
+  }
+  h3.subtitulo {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--gris-oscuro);
+    margin: 32px 0 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  h3.subtitulo::before {
+    content: ''; width: 4px; height: 4px;
+    border-radius: 50%; background: var(--rosa); flex-shrink: 0;
+  }
+  p {
+    color: var(--gris-medio);
+    margin-bottom: 16px;
+    font-weight: 300;
+    max-width: 720px;
+  }
+  p strong { color: var(--gris-oscuro); font-weight: 500; }
+
+  /* BLOQUES */
+  .alerta {
+    border-left: 3px solid var(--rosa);
+    background: #FDF5F7;
+    padding: 20px 24px;
+    border-radius: 0 4px 4px 0;
+    margin: 24px 0;
+  }
+  .alerta p { margin: 0; font-size: 15px; color: var(--gris-oscuro); max-width: 100%; }
+  .alerta strong { color: var(--rosa); }
+  .cita {
+    border-left: 2px solid var(--dorado);
+    padding: 16px 24px;
+    margin: 24px 0;
+    background: var(--dorado-claro);
+    border-radius: 0 4px 4px 0;
+  }
+  .cita p { font-style: italic; font-size: 16px; color: var(--gris-oscuro); margin: 0; max-width: 100%; }
+  .cita .fuente { font-size: 12px; color: var(--dorado); margin-top: 8px; font-style: normal; }
+
+  /* NOMBRES */
+  .nombres-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin: 32px 0; }
+  .nombre-card {
+    border: 1px solid var(--gris-linea);
+    border-radius: 4px;
+    padding: 28px;
+    position: relative;
+  }
+  .nombre-card.recomendado { border-color: var(--rosa); background: #FDFAF9; }
+  .badge-rec {
+    position: absolute; top: -12px; left: 20px;
+    background: var(--rosa); color: white;
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 2px;
+  }
+  .nombre-numero { font-size: 11px; color: var(--gris-suave); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+  .nombre-titulo { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--gris-oscuro); line-height: 1.1; margin-bottom: 10px; }
+  .nombre-slogan { font-size: 13px; font-style: italic; color: var(--gris-suave); line-height: 1.5; margin-bottom: 16px; }
+  .nombre-justificacion { font-size: 13px; color: var(--gris-medio); line-height: 1.6; font-weight: 300; border-top: 1px solid var(--gris-linea); padding-top: 14px; margin: 0; }
+
+  /* STATS */
+  .datos-contexto { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin: 32px 0; }
+  .dato-stat { background: var(--fondo); border-radius: 4px; padding: 20px; text-align: center; }
+  .dato-stat .numero { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--rosa); line-height: 1; margin-bottom: 4px; }
+  .dato-stat .etiqueta { font-size: 12px; color: var(--gris-suave); line-height: 1.4; }
+  .dato-stat .fuente { font-size: 10px; color: var(--gris-suave); margin-top: 8px; opacity: 0.7; }
+
+  /* OBJETIVO */
+  .objetivo-general {
+    background: var(--gris-oscuro); color: white;
+    padding: 32px 36px; border-radius: 4px; margin: 24px 0;
+  }
+  .objetivo-general .label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--rosa); margin-bottom: 12px; }
+  .objetivo-general p { color: rgba(255,255,255,0.85); font-size: 17px; line-height: 1.6; max-width: 100%; margin: 0; }
+
+  .obj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+  .obj-esp { border: 1px solid var(--gris-linea); border-radius: 4px; padding: 20px; display: flex; gap: 16px; align-items: flex-start; }
+  .obj-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--rosa-claro); line-height: 1; flex-shrink: 0; min-width: 32px; }
+  .obj-texto { font-size: 14px; color: var(--gris-medio); line-height: 1.6; margin: 0; font-weight: 300; }
+
+  /* EQUIPO PROFESIONAL */
+  .equipo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 32px 0; }
+  .profesional-card { border: 1px solid var(--gris-linea); border-radius: 4px; overflow: hidden; }
+  .profesional-header {
+    background: var(--gris-oscuro);
+    padding: 20px 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .profesional-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--rosa); display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: white; flex-shrink: 0;
+  }
+  .profesional-info h4 { font-size: 15px; font-weight: 500; color: white; margin-bottom: 2px; }
+  .profesional-info span { font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 0.05em; }
+  .profesional-body { padding: 20px 24px; }
+  .profesional-body p { font-size: 13px; color: var(--gris-medio); line-height: 1.65; margin: 0; font-weight: 300; }
+  .profesional-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .tag { display: inline-block; font-size: 11px; background: var(--fondo); color: var(--gris-medio); padding: 3px 10px; border-radius: 2px; border: 1px solid var(--gris-linea); }
+
+  /* JORNADA TIMELINE */
+  .jornada-timeline { position: relative; margin: 32px 0; }
+  .jornada-timeline::before {
+    content: ''; position: absolute;
+    left: 56px; top: 0; bottom: 0;
+    width: 1px; background: var(--gris-linea);
+  }
+  .momento { display: flex; gap: 24px; margin-bottom: 28px; position: relative; }
+  .momento-tiempo { min-width: 48px; text-align: right; font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; color: var(--rosa); padding-top: 2px; }
+  .momento-circulo { width: 16px; height: 16px; border-radius: 50%; background: white; border: 2px solid var(--rosa); flex-shrink: 0; margin-top: 2px; position: relative; z-index: 1; }
+  .momento-contenido { flex: 1; padding-bottom: 4px; }
+  .momento-titulo { font-size: 15px; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 4px; }
+  .momento-descripcion { font-size: 13px; color: var(--gris-suave); line-height: 1.65; font-weight: 300; margin: 0; max-width: 100%; }
+  .momento-tag { display: inline-block; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: var(--rosa-claro); color: var(--rosa); padding: 2px 8px; border-radius: 2px; margin-bottom: 6px; }
+
+  /* ENTREGABLES (fichas) */
+  .ficha-grid { display: grid; gap: 32px; margin: 32px 0; }
+  .ficha { border: 1px solid var(--gris-linea); border-radius: 4px; overflow: hidden; }
+  .ficha-header {
+    background: var(--gris-oscuro); padding: 24px 28px;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;
+  }
+  .ficha-num { font-family: 'Playfair Display', serif; font-size: 56px; font-weight: 700; color: rgba(255,255,255,0.07); line-height: 1; flex-shrink: 0; }
+  .ficha-head-texto { flex: 1; }
+  .ficha-categoria { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rosa); margin-bottom: 6px; }
+  .ficha-nombre { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: white; line-height: 1.2; }
+  .ficha-badge {
+    background: var(--rosa); color: white;
+    padding: 6px 14px; border-radius: 2px;
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    white-space: nowrap; align-self: flex-start;
+  }
+  .ficha-body { padding: 28px; }
+  .ficha-body p { font-size: 14px; color: var(--gris-medio); line-height: 1.75; font-weight: 300; max-width: 100%; }
+  .ficha-specs { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-top: 20px; }
+  .spec { background: var(--fondo); border-radius: 3px; padding: 14px 16px; }
+  .spec .spec-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gris-suave); margin-bottom: 4px; }
+  .spec .spec-valor { font-size: 14px; color: var(--gris-oscuro); font-weight: 500; }
+
+  /* POLÍTICA PÚBLICA */
+  .pp-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin: 32px 0; }
+  .pp-card { background: var(--fondo); border-radius: 4px; padding: 24px; border-bottom: 3px solid var(--rosa); }
+  .pp-icono { font-size: 28px; margin-bottom: 12px; }
+  .pp-titulo { font-size: 14px; font-weight: 500; color: var(--gris-oscuro); margin-bottom: 8px; }
+  .pp-texto { font-size: 13px; color: var(--gris-medio); line-height: 1.6; margin: 0; }
+
+  /* PRESUPUESTO — hoja final */
+  .hoja-presupuesto {
+    background: var(--gris-oscuro);
+    color: white;
+    padding: 64px 60px;
+    margin-top: 80px;
+  }
+  .hoja-presupuesto .titulo-hoja {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px; font-weight: 700;
+    color: white; margin-bottom: 8px;
+  }
+  .hoja-presupuesto .subtitulo-hoja {
+    font-size: 14px; color: rgba(255,255,255,0.5);
+    margin-bottom: 48px; font-weight: 300;
+  }
+  .presupuesto-items { display: grid; gap: 20px; margin-bottom: 40px; }
+  .pres-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: start;
+    padding: 24px 28px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pres-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--rosa);
+  }
+  .pres-item.secundario::before { background: rgba(255,255,255,0.2); }
+  .pres-item-left h4 { font-size: 15px; font-weight: 500; color: white; margin-bottom: 6px; }
+  .pres-item-left p { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.65; margin: 0; font-weight: 300; max-width: 100%; }
+  .pres-item-right { text-align: right; flex-shrink: 0; }
+  .pres-valor { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: white; white-space: nowrap; }
+  .pres-porcentaje { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+  .pres-barra { height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+  .pres-barra-fill { height: 100%; border-radius: 2px; background: var(--rosa); }
+  .presupuesto-total {
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 28px;
+    display: flex; justify-content: space-between; align-items: flex-end;
+  }
+  .total-label { font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 6px; }
+  .total-valor { font-family: 'Playfair Display', serif; font-size: 48px; font-weight: 700; color: white; line-height: 1; }
+  .total-nota { font-size: 12px; color: rgba(255,255,255,0.35); max-width: 340px; text-align: right; line-height: 1.5; }
+  .chart-pres { margin-top: 40px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .chart-pres-titulo { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+
+  /* PIE */
+  .pie-doc { background: #111; color: white; padding: 48px 60px; }
+  .pie-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; margin-bottom: 32px; }
+  .pie-bloque h4 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 10px; }
+  .pie-bloque p { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.7; max-width: 100%; margin: 0; }
+  .pie-bloque strong { color: white; display: block; font-size: 14px; margin-bottom: 4px; }
+  .pie-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,0.25); }
+
+  /* FIRMA */
+  .firma-bloque { border: 1px solid var(--gris-linea); border-radius: 4px; padding: 32px; margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .firma-item { padding-top: 40px; border-top: 1px solid var(--gris-oscuro); }
+  .firma-nombre { font-weight: 500; color: var(--gris-oscuro); font-size: 14px; margin-bottom: 2px; }
+  .firma-cargo { font-size: 12px; color: var(--gris-suave); }
+
+  .separador { display: flex; align-items: center; gap: 16px; margin: 48px 0; }
+  .separador::before, .separador::after { content: ''; flex: 1; height: 1px; background: var(--gris-linea); }
+  .separador span { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gris-suave); }
+
+  .impacto-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin: 32px 0; }
+  .impacto-card { background: var(--fondo); border-radius: 4px; padding: 24px; text-align: center; border-bottom: 3px solid var(--rosa); }
+  .impacto-numero { font-family: 'Playfair Display', serif; font-size: 44px; font-weight: 700; color: var(--rosa); line-height: 1; margin-bottom: 8px; }
+  .impacto-desc { font-size: 13px; color: var(--gris-medio); line-height: 1.5; margin: 0; }
+</style>
+</head>
+<body>
+
+<!-- PORTADA -->
+<div class="portada">
+  <div class="portada-header">
+    <div class="portada-logo-bloque">
+      <strong>Municipio de Envigado</strong>
+      Secretaría de la Mujer<br>
+      Antioquia, Colombia
+    </div>
+    <div class="portada-ref">
+      Versión 1.0 — 2025<br>
+      Propuesta Técnica y Financiera<br>
+      Contratación Directa / Convenio
+    </div>
+  </div>
+  <div class="portada-centro">
+    <div class="portada-categoria">Propuesta de Proyecto Social</div>
+    <div class="portada-titulo">TERRITORIO<br><span>SEGURO</span></div>
+    <div class="portada-subtitulo">Intervención psicosocial itinerante para la prevención de violencias en entornos escolares y digitales, dirigida a niñas y adolescentes de 7 a 14 años de las instituciones educativas del Municipio de Envigado.</div>
+    <div class="portada-slogan">"Mi cuerpo, mi espacio, mis reglas."</div>
+  </div>
+  <div class="portada-footer">
+    <div class="portada-dato">
+      <span class="etiqueta">Presupuesto Total</span>
+      <span class="valor">$80M</span>
+      <span class="descripcion">COP — Modelo de alta especialización</span>
+    </div>
+    <div class="portada-dato">
+      <span class="etiqueta">Beneficiarias directas</span>
+      <span class="valor">1.200+</span>
+      <span class="descripcion">Niñas y adolescentes entre 7 y 14 años</span>
+    </div>
+    <div class="portada-dato">
+      <span class="etiqueta">Instituciones educativas</span>
+      <span class="valor">12+</span>
+      <span class="descripcion">Colegios del municipio de Envigado</span>
+    </div>
+    <div class="portada-dato">
+      <span class="etiqueta">Duración</span>
+      <span class="valor">4 meses</span>
+      <span class="descripcion">Jornadas rotatorias de 90 minutos</span>
+    </div>
+  </div>
+</div>
+
+<div class="documento">
+
+  <!-- S1: NOMBRE -->
+  <div class="seccion">
+    <div class="num-seccion">Sección 01</div>
+    <h2 class="titulo-seccion">Opciones de nombre<br>y concepto creativo</h2>
+    <p>Se presentan tres propuestas de nombre con potencial institucional, memorabilidad y coherencia con el enfoque psicosocial del proyecto.</p>
+    <div class="nombres-grid">
+      <div class="nombre-card recomendado">
+        <div class="badge-rec">★ Recomendado</div>
+        <div class="nombre-numero">Opción 01</div>
+        <div class="nombre-titulo">TERRITORIO<br>SEGURO</div>
+        <div class="nombre-slogan">"Mi cuerpo, mi espacio, mis reglas."</div>
+        <p class="nombre-justificacion">Evoca territorialidad, autonomía corporal y empoderamiento. Funciona como marca institucional con alta recordación y conecta directamente con el lenguaje de derechos humanos y protección a la niñez.</p>
+      </div>
+      <div class="nombre-card">
+        <div class="nombre-numero">Opción 02</div>
+        <div class="nombre-titulo">LÍMITES<br>QUE BRILLAN</div>
+        <div class="nombre-slogan">"Cuídate, conócete, protégete."</div>
+        <p class="nombre-justificacion">Integra semánticamente el componente físico del proyecto (glitter) con el eje psicosocial de límites y autocuidado. Potente para comunicaciones visuales y redes institucionales.</p>
+      </div>
+      <div class="nombre-card">
+        <div class="nombre-numero">Opción 03</div>
+        <div class="nombre-titulo">VOZ<br>PROPIA</div>
+        <div class="nombre-slogan">"Entornos seguros para niñas que se conocen."</div>
+        <p class="nombre-justificacion">Minimalista y de alta carga institucional. Proyecta madurez conceptual ante evaluadores y organismos de control. Ideal para documentos de política pública.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2: JUSTIFICACIÓN -->
+  <div class="seccion">
+    <div class="num-seccion">Sección 02</div>
+    <h2 class="titulo-seccion">Justificación técnica<br>y social</h2>
+    <div class="alerta">
+      <p><strong>Envigado es un municipio modelo</strong> en calidad de vida del Valle de Aburrá. Sin embargo, sus niñas y adolescentes no son ajenas a la epidemia de violencias escolares y digitales que afecta a Colombia. Este proyecto responde con evidencia, innovación y pertinencia a ese vacío de intervención directa y documentada.</p>
+    </div>
+    <h3 class="subtitulo">El contexto nacional que exige una respuesta municipal</h3>
+    <div class="datos-contexto">
+      <div class="dato-stat">
+        <div class="numero">7/10</div>
+        <div class="etiqueta">niños y jóvenes en Colombia sufren acoso escolar o ciberacoso</div>
+        <div class="fuente">Bullying Sin Fronteras, 2023–2024</div>
+      </div>
+      <div class="dato-stat">
+        <div class="numero">62%</div>
+        <div class="etiqueta">de los casos de acoso escolar son sufridos por estudiantes de género femenino</div>
+        <div class="fuente">SUICE – Min. Educación, 2023</div>
+      </div>
+      <div class="dato-stat">
+        <div class="numero">37%</div>
+        <div class="etiqueta">de las niñas y mujeres jóvenes han experimentado violencia digital en Colombia</div>
+        <div class="fuente">ONU / RCN Radio, 2023</div>
+      </div>
+      <div class="dato-stat">
+        <div class="numero">+2.690</div>
+        <div class="etiqueta">casos nuevos de acoso escolar en 2023 vs. 2022. Antioquia entre los más afectados.</div>
+        <div class="fuente">SUICE, 2023</div>
+      </div>
+    </div>
+    <div class="cita">
+      <p>"Colombia es el segundo país del mundo con mayor exposición al bullying escolar según PISA. Antioquia figura entre los cuatro departamentos con mayor número de casos reportados."</p>
+      <div class="fuente">Ministerio de Educación Nacional / PISA / El Colombiano, 2024</div>
+    </div>
+    <h3 class="subtitulo">¿Por qué Envigado necesita este proyecto ahora?</h3>
+    <p>Con más de <strong>63.000 estudiantes matriculados</strong> en su sistema educativo y una población de <strong>228.848 habitantes</strong>, Envigado cuenta con una comunidad educativa significativa. Sin embargo, el municipio aún carece de un programa de intervención directa, masiva y con evidencia documentada, que aborde de forma preventiva las violencias que enfrentan las niñas específicamente en los entornos escolares y digitales.</p>
+    <p>La <strong>Secretaría de la Mujer</strong> tiene el mandato institucional de cerrar esa brecha. TERRITORIO SEGURO es la respuesta concreta, medible y técnicamente sólida a ese mandato, con capacidad de dejar evidencia institucional útil para la toma de decisiones en política pública local.</p>
+  </div>
+
+  <!-- S3: OBJETIVOS -->
+  <div class="seccion">
+    <div class="num-seccion">Sección 03</div>
+    <h2 class="titulo-seccion">Objetivos del proyecto</h2>
+    <div class="objetivo-general">
+      <div class="label">Objetivo General</div>
+      <p>Implementar una intervención psicosocial itinerante, masiva e integral para la prevención de violencias en entornos escolares y digitales, dirigida a niñas y adolescentes entre 7 y 14 años de las instituciones educativas de Envigado, fortaleciendo el reconocimiento del cuerpo propio, el consentimiento, los límites saludables y las redes de apoyo entre pares, con apoyo de herramientas tecnológicas, editoriales y físicas de alta calidad que permitan documentar el impacto y consolidar insumos para la política pública municipal de género.</p>
+    </div>
+    <h3 class="subtitulo">Objetivos específicos</h3>
+    <div class="obj-grid">
+      <div class="obj-esp"><div class="obj-num">1</div><p class="obj-texto">Ejecutar jornadas presenciales de 90 minutos en un mínimo de 12 instituciones educativas, con participación activa de al menos 1.200 estudiantes del segmento etario definido.</p></div>
+      <div class="obj-esp"><div class="obj-num">2</div><p class="obj-texto">Aplicar el Test de Entornos Seguros a la totalidad de participantes, recopilando datos sobre percepción de seguridad, exposición a violencias y redes de apoyo por institución.</p></div>
+      <div class="obj-esp"><div class="obj-num">3</div><p class="obj-texto">Entregar a cada participante su kit individual de autocuidado Kokito Star® y su Bitácora de Límites y Amor Propio como herramientas de continuidad del aprendizaje.</p></div>
+      <div class="obj-esp"><div class="obj-num">4</div><p class="obj-texto">Garantizar al supervisor del contrato visibilidad en tiempo real del avance del proyecto mediante el sistema digital interno de seguimiento y registro de evidencias.</p></div>
+      <div class="obj-esp"><div class="obj-num">5</div><p class="obj-texto">Producir informes técnicos por institución educativa que constituyan insumo formal para el diagnóstico municipal de violencias escolares y la política pública de género.</p></div>
+      <div class="obj-esp"><div class="obj-num">6</div><p class="obj-texto">Posicionar a la Secretaría de la Mujer de Envigado como entidad líder en intervención preventiva con enfoque de género en el Valle de Aburrá.</p></div>
+    </div>
+  </div>
+
+  <!-- S4: EQUIPO PROFESIONAL -->
+  <div class="seccion">
+    <div class="num-seccion">Sección 04</div>
+    <h2 class="titulo-seccion">El equipo profesional:<br>corazón del proyecto</h2>
+
+    <p>El componente que concentra el mayor peso presupuestal del proyecto es su <strong>equipo humano especializado</strong>. TERRITORIO SEGURO no es un taller genérico: es una intervención psicosocial con protocolo estructurado, liderada por profesionales con formación específica en género, intervención grupal con adolescentes y comunicación pedagógica. La calidad del equipo define directamente la calidad del impacto.</p>
+
+    <div class="alerta">
+      <p><strong>Principio rector:</strong> El dinero más importante del proyecto no está en los materiales — está en las personas que entran al colegio, se paran frente a las niñas y generan el cambio. Los materiales prolongan ese impacto. Los profesionales lo crean.</p>
+    </div>
+
+    <h3 class="subtitulo">Perfiles del equipo de campo</h3>
+    <div class="equipo-grid">
+      <div class="profesional-card">
+        <div class="profesional-header">
+          <div class="profesional-avatar">Ps</div>
+          <div class="profesional-info">
+            <h4>Psicóloga principal de jornada</h4>
+            <span>Perfil senior — presencia en campo</span>
+          </div>
+        </div>
+        <div class="profesional-body">
+          <p>Profesional en psicología con énfasis en intervención grupal, enfoque de género y trabajo con poblaciones adolescentes. Es la figura central de cada jornada: conduce los 90 minutos con un estilo dinámico, cercano y no condescendiente, adaptando el tono y el ritmo al grupo de cada institución. Tiene formación adicional en comunicación no violenta y manejo de emergencias emocionales en entorno escolar.</p>
+          <div class="profesional-tags">
+            <span class="tag">Psicología clínica</span>
+            <span class="tag">Enfoque de género</span>
+            <span class="tag">Intervención grupal</span>
+            <span class="tag">Adolescentes</span>
+            <span class="tag">Comunicación no violenta</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="profesional-card">
+        <div class="profesional-header">
+          <div class="profesional-avatar" style="background: var(--dorado);">Co</div>
+          <div class="profesional-info">
+            <h4>Coordinadora pedagógica</h4>
+            <span>Apoyo de campo — logística y registro</span>
+          </div>
+        </div>
+        <div class="profesional-body">
+          <p>Profesional en educación, trabajo social o ciencias sociales, responsable de la logística interna de cada jornada: coordinación con el personal del colegio, manejo de materiales, registro fotográfico con calidad institucional, diligenciamiento de actas y gestión de la asistencia en el sistema digital. Actúa como puente entre el equipo del proyecto y la institución educativa anfitriona.</p>
+          <div class="profesional-tags">
+            <span class="tag">Educación / Trabajo social</span>
+            <span class="tag">Gestión logística</span>
+            <span class="tag">Registro y evidencias</span>
+            <span class="tag">Relación institucional</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="profesional-card">
+        <div class="profesional-header">
+          <div class="profesional-avatar" style="background: #4A4A4A;">Di</div>
+          <div class="profesional-info">
+            <h4>Director creativo y de comunicaciones</h4>
+            <span>Dirección de arte — producción editorial</span>
+          </div>
+        </div>
+        <div class="profesional-body">
+          <p>Profesional en diseño gráfico y comunicaciones, responsable de la identidad visual del proyecto, la dirección de arte de todos los materiales (bitácora, kits, presentaciones, señalética de jornada), y la producción de contenido visual institucional para la Secretaría. Garantiza que cada pieza que salga del proyecto esté a nivel internacional y represente con dignidad y seriedad a la administración municipal.</p>
+          <div class="profesional-tags">
+            <span class="tag">Diseño editorial</span>
+            <span class="tag">Identidad visual</span>
+            <span class="tag">Producción gráfica</span>
+            <span class="tag">Comunicación institucional</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="profesional-card">
+        <div class="profesional-header">
+          <div class="profesional-avatar" style="background: #2A5A8A;">Dev</div>
+          <div class="profesional-info">
+            <h4>Desarrollador de sistemas</h4>
+            <span>Tecnología — plataforma de supervisión</span>
+          </div>
+        </div>
+        <div class="profesional-body">
+          <p>Profesional en desarrollo de software, responsable del sistema digital interno de seguimiento contractual: la plataforma donde el supervisor del contrato puede verificar en tiempo real el avance de las jornadas, revisar evidencias, consultar datos del test y descargar informes. No es una herramienta pública ni permanente: es la solución de trazabilidad interna del proyecto, construida a la medida del flujo contractual.</p>
+          <div class="profesional-tags">
+            <span class="tag">Node.js / JavaScript</span>
+            <span class="tag">Sistemas de gestión</span>
+            <span class="tag">UX / Panel administrativo</span>
+            <span class="tag">Generación de informes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="subtitulo">Modelo de coordinación del equipo</h3>
+    <p>El equipo opera bajo un esquema de <strong>dirección unificada</strong>: cada jornada tiene un coordinador de proyecto que sincroniza al equipo de campo antes de cada visita institucional, garantizando que todos los materiales, el sistema digital y el protocolo de la jornada estén listos con anticipación. Al finalizar cada jornada, el coordinador carga las evidencias al sistema en las siguientes 24 horas, manteniéndolo actualizado para el supervisor del contrato.</p>
+  </div>
+
+  <!-- S5: OPERACIÓN EN CAMPO -->
+  <div class="seccion">
+    <div class="num-seccion">Sección 05</div>
+    <h2 class="titulo-seccion">La operación en el colegio:<br>qué ocurre los 90 minutos</h2>
+
+    <p>La jornada presencial es el núcleo del proyecto. Todo lo demás — la plataforma, los materiales, los informes — existe para preparar, potenciar y documentar lo que ocurre en ese espacio. Cada jornada se realiza en el auditorio, polideportivo o aula magna de la institución, con grupos de entre <strong>80 y 120 estudiantes</strong> del rango etario definido.</p>
+
+    <div class="alerta">
+      <p><strong>Principio metodológico:</strong> La jornada no es una clase ni una conferencia. Es una experiencia de reconocimiento personal. No hay discursos. Hay actividades, preguntas reales, conversación y acción. Las niñas son las protagonistas — la psicóloga es la facilitadora.</p>
+    </div>
+
+    <h3 class="subtitulo">Estructura detallada de los 90 minutos</h3>
+
+    <div class="jornada-timeline">
+      <div class="momento">
+        <div class="momento-tiempo">0–10'</div>
+        <div class="momento-circulo"></div>
+        <div class="momento-contenido">
+          <div class="momento-tag">Apertura</div>
+          <div class="momento-titulo">Bienvenida y conexión con el grupo</div>
+          <p class="momento-descripcion">La psicóloga se presenta con un tono informal y genuinamente cercano. No hay jerarquía: ella no viene a "dar una charla", viene a conversar. Actividad rompe-hielo: "¿Cómo se llama tu espacio seguro?". Se establece un pacto colectivo de escucha activa y confidencialidad. Se proyecta la identidad visual del proyecto en pantalla para generar sentido de pertenencia desde el primer minuto.</p>
+        </div>
+      </div>
+      <div class="momento">
+        <div class="momento-tiempo">10–20'</div>
+        <div class="momento-circulo"></div>
+        <div class="momento-contenido">
+          <div class="momento-tag">Test digital</div>
+          <div class="momento-titulo">Test de Entornos Seguros — desde el celular</div>
+          <p class="momento-descripcion">Las estudiantes ingresan al test desde su celular mediante un código QR proyectado en pantalla. 12 preguntas sobre percepción de seguridad en el colegio, en redes sociales y en el entorno familiar. El test es 100% anónimo — ninguna niña identifica su respuesta. Los datos se registran automáticamente en el sistema interno. Este momento también genera un espacio de silencio y reflexión individual antes del trabajo grupal.</p>
+        </div>
+      </div>
+      <div class="momento">
+        <div class="momento-tiempo">20–45'</div>
+        <div class="momento-circulo"></div>
+        <div class="momento-contenido">
+          <div class="momento-tag">Módulo central</div>
+          <div class="momento-titulo">Mi cuerpo, mis límites, mi voz — tres ejes temáticos</div>
+          <p class="momento-descripcion">El bloque más denso de la jornada trabaja tres ejes de forma ágil y sin moralizar. <strong>Eje 1 — Cuerpo y consentimiento:</strong> qué significa el consentimiento en la vida cotidiana, cuándo aplica y cómo decir que no sin culpa. <strong>Eje 2 — Violencia estética y entornos digitales:</strong> cómo reconocer el bullying en redes, los estándares de belleza impuestos por plataformas como Instagram y TikTok, y la diferencia entre crítica y violencia. <strong>Eje 3 — Acoso escolar:</strong> diferencia entre conflicto y acoso sistemático, qué hacer como testigo, cómo actuar sin exponerse, y cuáles son las rutas de atención reales en el municipio. Metodología: preguntas al grupo, casos anónimos reales presentados por la psicóloga, reflexión colectiva guiada sin juicio.</p>
+        </div>
+      </div>
+      <div class="momento">
+        <div class="momento-tiempo">45–65'</div>
+        <div class="momento-circulo"></div>
+        <div class="momento-contenido">
+          <div class="momento-tag">Experiencia creativa</div>
+          <div class="momento-titulo">Actividad con la Bitácora y el Kit Kokito Star®</div>
+          <p class="momento-descripcion">Se entrega a cada niña su kit individual: la Bitácora de Límites y Amor Propio más el kit Kokito Star®. Actividad guiada en la primera página: cada niña construye su "Mapa de personas seguras" — las personas en su vida a quienes puede acudir en una situación difícil. Es un ejercicio de cartografía afectiva que visibiliza redes de apoyo que muchas niñas no habían reconocido conscientemente. Simultáneamente, la psicóloga explica el significado del tatuaje temporal de glitter como símbolo personal de autocuidado, autoexpresión y pertenencia a una red de pares que cuida.</p>
+        </div>
+      </div>
+      <div class="momento">
+        <div class="momento-tiempo">65–80'</div>
+        <div class="momento-circulo"></div>
+        <div class="momento-contenido">
+          <div class="momento-tag">Cierre reflexivo</div>
+          <div class="momento-titulo">Círculo de compromisos colectivos</div>
+          <p class="momento-descripcion">Dinámica de cierre en semicírculo: cada niña (voluntariamente) comparte una palabra sobre cómo se va de la jornada. La psicóloga recoge las palabras en una nube visual proyectada en tiempo real. Se presenta la "Red Territorio Seguro": cómo compartir lo aprendido con amigas, familiares y compañeras. Se hace visibles los datos de contacto reales de las rutas de atención locales: orientadores escolares, ICBF Envigado, líneas de apoyo psicológico municipales.</p>
+        </div>
+      </div>
+      <div class="momento">
+        <div class="momento-tiempo">80–90'</div>
+        <div class="momento-circulo"></div>
+        <div class="momento-contenido">
+          <div class="momento-tag">Registro y cierre administrativo</div>
+          <div class="momento-titulo">Foto institucional + acta de jornada</div>
+          <p class="momento-descripcion">Foto grupal institucional con el cartel de TERRITORIO SEGURO y la identificación de la Secretaría de la Mujer. El equipo registra la asistencia final en la plataforma y carga la evidencia fotográfica al panel del supervisor. El coordinador de la institución educativa firma el acta de recibido de la jornada, que queda como soporte físico y digital del contrato. Las evidencias estarán disponibles para el supervisor en las siguientes 24 horas.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="subtitulo">Antes y después de la jornada: la operación invisible</h3>
+    <p>Lo que se ve en el colegio es la punta del iceberg. Antes de cada jornada, el equipo realiza una visita de alistamiento a la institución, coordina con el rector o coordinador los grupos y el espacio, prepara y empaca los materiales individualizados, y actualiza el sistema digital con la información del colegio. Después, redacta el acta, carga todas las evidencias, alimenta la base de datos del test y genera el borrador del informe técnico de esa institución. <strong>Cada jornada visible representa aproximadamente tres días de trabajo invisible del equipo.</strong></p>
+  </div>
+
+  <!-- S6: ENTREGABLES FINALES -->
+  <div class="seccion">
+    <div class="num-seccion">Sección 06</div>
+    <h2 class="titulo-seccion">Entregables finales:<br>insumos para política pública</h2>
+
+    <p>Al cierre del proyecto, la Secretaría de la Mujer recibirá un conjunto de <strong>entregables técnicos y físicos</strong> que constituyen la consolidación formal de toda la intervención. Estos no son simplemente informes de ejecución contractual: son instrumentos de conocimiento real sobre la situación de las niñas de Envigado, útiles para argumentar decisiones de política pública, solicitar recursos, diseñar programas futuros y rendir cuentas ante la ciudadanía y los organismos de control.</p>
+
+    <div class="alerta">
+      <p><strong>El valor institucional de los entregables</strong> supera el valor contractual. Una Secretaría que puede mostrar datos reales sobre violencias escolares en sus colegios, por nombre de institución, con metodología documentada, tiene una ventaja política y técnica que ningún otro municipio del Valle de Aburrá tiene hoy.</p>
+    </div>
+
+    <div class="ficha-grid">
+
+      <div class="ficha">
+        <div class="ficha-header">
+          <div class="ficha-num">01</div>
+          <div class="ficha-head-texto">
+            <div class="ficha-categoria">Entregable documental — Insumo de política pública</div>
+            <div class="ficha-nombre">Informes Técnicos por Institución Educativa</div>
+          </div>
+          <div class="ficha-badge">12 informes</div>
+        </div>
+        <div class="ficha-body">
+          <p>Cada institución educativa intervenida recibe un informe técnico individual, en formato impreso encuadernado y en versión digital PDF, que documenta los resultados de la jornada realizada en ese colegio específico. Este informe incluye: ficha de la institución, número de estudiantes participantes, resultados estadísticos del Test de Entornos Seguros (percepción de seguridad, exposición a violencias, redes de apoyo), observaciones cualitativas de la psicóloga y recomendaciones específicas para ese contexto escolar.</p>
+          <p>Estos informes son entregados directamente al supervisor del contrato y sirven como evidencia documental de la ejecución. Su nivel de detalle los hace directamente utilizables en diagnósticos municipales, informes de gestión, solicitudes de recursos ante el Departamento y presentaciones ante el Concejo Municipal.</p>
+          <div class="ficha-specs">
+            <div class="spec"><div class="spec-label">Formato</div><div class="spec-valor">Impreso encuadernado + PDF digital</div></div>
+            <div class="spec"><div class="spec-label">Contenido</div><div class="spec-valor">Datos cuantitativos + análisis cualitativo por colegio</div></div>
+            <div class="spec"><div class="spec-label">Firmado por</div><div class="spec-valor">Psicóloga responsable del proyecto</div></div>
+            <div class="spec"><div class="spec-label">Utilidad institucional</div><div class="spec-valor">Diagnóstico local, política pública, rendición de cuentas</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ficha">
+        <div class="ficha-header">
+          <div class="ficha-num">02</div>
+          <div class="ficha-head-texto">
+            <div class="ficha-categoria">Entregable documental — Consolidación del proyecto</div>
+            <div class="ficha-nombre">Informe Final Consolidado TERRITORIO SEGURO</div>
+          </div>
+          <div class="ficha-badge">1 informe maestro</div>
+        </div>
+        <div class="ficha-body">
+          <p>Al cierre del proyecto se entrega un informe final consolidado que integra los resultados de todas las instituciones intervenidas, permitiendo una lectura comparada del panorama de violencias escolares en Envigado. Este documento incluye: resumen ejecutivo, metodología, ficha de cada institución, análisis estadístico agregado, hallazgos transversales, conclusiones y recomendaciones de política pública.</p>
+          <p>Este informe es el documento con mayor valor estratégico del proyecto. Puede ser presentado por la Secretaría ante la Alcaldía, el Concejo Municipal, la Gobernación de Antioquia, organismos de cooperación internacional, o cualquier instancia que requiera evidencia del trabajo institucional en protección a la niñez y género. Está redactado en lenguaje técnico-institucional, con rigor metodológico y presentación gráfica de nivel profesional.</p>
+          <div class="ficha-specs">
+            <div class="spec"><div class="spec-label">Formato</div><div class="spec-valor">Impreso de alta calidad + versión digital interactiva</div></div>
+            <div class="spec"><div class="spec-label">Contenido</div><div class="spec-valor">Análisis comparado de 12 instituciones + recomendaciones</div></div>
+            <div class="spec"><div class="spec-label">Presentación</div><div class="spec-valor">Diseño editorial profesional con gráficas y visualizaciones</div></div>
+            <div class="spec"><div class="spec-label">Utilidad institucional</div><div class="spec-valor">Herramienta para argumentar política pública de género en Envigado</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ficha">
+        <div class="ficha-header">
+          <div class="ficha-num">03</div>
+          <div class="ficha-head-texto">
+            <div class="ficha-categoria">Entregable físico — Herramienta de anclaje emocional</div>
+            <div class="ficha-nombre">Bitácora de Límites y Amor Propio</div>
+          </div>
+          <div class="ficha-badge">1.300 ejemplares</div>
+        </div>
+        <div class="ficha-body">
+          <p>Pieza editorial de 40 páginas diseñada con estética contemporánea y composición minimalista, entregada individualmente a cada estudiante durante la jornada. No es un cuaderno escolar ni un material genérico: es un instrumento de reflexión personal con actividades guiadas, mapas de relaciones, páginas de compromisos personales y datos reales de redes de apoyo institucional disponibles en Envigado (ICBF, orientadores, líneas de atención).</p>
+          <p>Su función psicológica es clara: prolongar el impacto de la jornada más allá del aula. Cada vez que la niña abre su bitácora en casa, activa la memoria de lo trabajado en la jornada. Es también un objeto de identidad: tiene su nombre, sus mapas, sus compromisos. Nadie más tiene una igual.</p>
+          <div class="ficha-specs">
+            <div class="spec"><div class="spec-label">Formato</div><div class="spec-valor">15×21 cm, 40 págs., portada cartón dúplex mate</div></div>
+            <div class="spec"><div class="spec-label">Diseño</div><div class="spec-valor">Dirección de arte in-house, tipografía editorial, sin estética infantilizada</div></div>
+            <div class="spec"><div class="spec-label">Tiraje</div><div class="spec-valor">1.300 ejemplares (100 adicionales para muestra institucional)</div></div>
+            <div class="spec"><div class="spec-label">Función</div><div class="spec-valor">Anclaje emocional + continuidad del aprendizaje en el hogar</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ficha">
+        <div class="ficha-header">
+          <div class="ficha-num">04</div>
+          <div class="ficha-head-texto">
+            <div class="ficha-categoria">Entregable físico — Herramienta de expresión personal</div>
+            <div class="ficha-nombre">Kit de Autocuidado Kokito Star®</div>
+          </div>
+          <div class="ficha-badge">1.300 kits</div>
+        </div>
+        <div class="ficha-body">
+          <p>Kit individual de grado cosmético que incluye tatuajes temporales con glitter seguro, pegamento de uso dérmico apto para piel infantil y plantillas de diseño abstracto para personalización. Presentado en empaque individual sellado con branding TERRITORIO SEGURO y la identificación de la Secretaría de la Mujer de Envigado.</p>
+          <p>El kit no es un souvenir: es una <strong>herramienta de anclaje emocional y expresión personal</strong> con un propósito pedagógico documentado en la metodología del proyecto. Activa la conversación entre pares ("¿Te entregaron eso en tu colegio?"), fomenta redes de apoyo informales entre estudiantes y extiende la visibilidad del proyecto hacia el entorno familiar. Es además el elemento más fotografiable y comunicable del proyecto para las redes institucionales de la Secretaría.</p>
+          <div class="ficha-specs">
+            <div class="spec"><div class="spec-label">Componentes</div><div class="spec-valor">Tatuajes glitter + pegamento cosmético + 3 stencils abstractos</div></div>
+            <div class="spec"><div class="spec-label">Seguridad</div><div class="spec-valor">Grado cosmético, libre de alérgenos comunes, apto para piel infantil</div></div>
+            <div class="spec"><div class="spec-label">Empaque</div><div class="spec-valor">Individual sellado con branding institucional del proyecto</div></div>
+            <div class="spec"><div class="spec-label">Función</div><div class="spec-valor">Anclaje emocional, expresión personal, visibilidad institucional del proyecto</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ficha">
+        <div class="ficha-header">
+          <div class="ficha-num">05</div>
+          <div class="ficha-head-texto">
+            <div class="ficha-categoria">Entregable tecnológico — Supervisión contractual</div>
+            <div class="ficha-nombre">Sistema digital de seguimiento y actas de ejecución</div>
+          </div>
+          <div class="ficha-badge">Panel + 12 actas</div>
+        </div>
+        <div class="ficha-body">
+          <p>Herramienta digital de uso interno desarrollada a la medida del proyecto para garantizar trazabilidad contractual total. El supervisor del contrato accede con su usuario a un panel donde puede verificar en tiempo real: jornadas ejecutadas y pendientes, número de asistentes por institución, galería de evidencias fotográficas, datos de avance del cronograma y acceso a los informes técnicos generados. No es una plataforma pública ni un sistema permanente: es el instrumento de transparencia interna del contrato, que funciona durante la ejecución y genera los soportes documentales de cierre.</p>
+          <p>Complementa el sistema una serie de 12 actas físicas de ejecución por jornada, firmadas por el coordinador de cada institución educativa, que constituyen el soporte legal de la intervención realizada.</p>
+          <div class="ficha-specs">
+            <div class="spec"><div class="spec-label">Acceso</div><div class="spec-valor">Panel web privado con login para el supervisor del contrato</div></div>
+            <div class="spec"><div class="spec-label">Contenido</div><div class="spec-valor">Jornadas, asistentes, fotos, cronograma, informes descargables</div></div>
+            <div class="spec"><div class="spec-label">Actualización</div><div class="spec-valor">Máximo 24 horas después de cada jornada ejecutada</div></div>
+            <div class="spec"><div class="spec-label">Soporte físico</div><div class="spec-valor">12 actas firmadas por coordinador de institución educativa</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- S7: IMPACTO -->
+  <div class="seccion">
+    <div class="num-seccion">Sección 07</div>
+    <h2 class="titulo-seccion">Impacto esperado y<br>valor institucional</h2>
+    <p>TERRITORIO SEGURO es un <strong>activo político, técnico y comunicacional</strong> para la Secretaría de la Mujer y la administración municipal. Al cierre del proyecto, Envigado contará con evidencia real, documentada y presentable sobre la situación de sus niñas.</p>
+    <div class="impacto-grid">
+      <div class="impacto-card">
+        <div class="impacto-numero">1.200+</div>
+        <p class="impacto-desc">Niñas beneficiadas con jornada presencial, bitácora y kit individual de autocuidado</p>
+      </div>
+      <div class="impacto-card">
+        <div class="impacto-numero">12+</div>
+        <p class="impacto-desc">Instituciones educativas del municipio intervenidas con protocolo psicosocial documentado</p>
+      </div>
+      <div class="impacto-card">
+        <div class="impacto-numero">13</div>
+        <p class="impacto-desc">Informes técnicos entregados (12 por institución + 1 informe consolidado de política pública)</p>
+      </div>
+      <div class="impacto-card">
+        <div class="impacto-numero">100%</div>
+        <p class="impacto-desc">Trazabilidad contractual: el supervisor verifica el avance en tiempo real desde el primer día</p>
+      </div>
+      <div class="impacto-card">
+        <div class="impacto-numero">4 meses</div>
+        <p class="impacto-desc">Ejecución estructurada con hitos parciales, entregables verificables y liquidación limpia</p>
+      </div>
+      <div class="impacto-card">
+        <div class="impacto-numero">$66.666</div>
+        <p class="impacto-desc">Costo por beneficiaria directa (COP) — altamente competitivo en el sector público colombiano</p>
+      </div>
+    </div>
+
+    <h3 class="subtitulo">Por qué este proyecto es un logro para la Secretaría</h3>
+    <div class="pp-grid">
+      <div class="pp-card">
+        <div class="pp-icono">📊</div>
+        <div class="pp-titulo">Diagnóstico real de Envigado</div>
+        <p class="pp-texto">Los informes técnicos por colegio son el primer diagnóstico sistemático de violencias escolares específico para Envigado. Una herramienta que no existía antes de este proyecto.</p>
+      </div>
+      <div class="pp-card">
+        <div class="pp-icono">📸</div>
+        <div class="pp-titulo">Visibilidad comunicacional</div>
+        <p class="pp-texto">El proyecto genera contenido visual de alta calidad para las redes de la Secretaría y la Alcaldía. Cada jornada en un colegio es un hecho comunicable y político.</p>
+      </div>
+      <div class="pp-card">
+        <div class="pp-icono">🏛️</div>
+        <div class="pp-titulo">Cumplimiento de mandato</div>
+        <p class="pp-texto">Responde directamente a los compromisos del Plan de Desarrollo Municipal en protección a la niñez y prevención de violencias basadas en género.</p>
+      </div>
+      <div class="pp-card">
+        <div class="pp-icono">🔁</div>
+        <div class="pp-titulo">Modelo replicable</div>
+        <p class="pp-texto">La estructura del proyecto es exportable a otros municipios del Valle de Aburrá, posicionando a Envigado como referente regional en innovación social con enfoque de género.</p>
+      </div>
+      <div class="pp-card">
+        <div class="pp-icono">📋</div>
+        <div class="pp-titulo">Rendición de cuentas sólida</div>
+        <p class="pp-texto">El sistema de evidencias y los informes técnicos blindan el contrato ante organismos de control: Contraloría, Personería y organismos de veeduría ciudadana.</p>
+      </div>
+      <div class="pp-card">
+        <div class="pp-icono">⚖️</div>
+        <div class="pp-titulo">Alineado con marcos legales</div>
+        <p class="pp-texto">La intervención responde a la Ley 1257 de 2008, la Ley 1620 de convivencia escolar, el Código de Infancia y Adolescencia y la política pública de género de Antioquia.</p>
+      </div>
+    </div>
+
+    <div class="cita">
+      <p>"Mientras otros proyectos intervienen, TERRITORIO SEGURO mide, actúa y deja en manos de la Secretaría una herramienta real para tomar decisiones con datos."</p>
+      <div class="fuente">Concepto diferenciador del modelo de intervención</div>
+    </div>
+  </div>
+
+  <!-- FIRMA -->
+  <div class="separador"><span>Suscripción de la propuesta</span></div>
+  <div class="firma-bloque">
+    <div class="firma-item">
+      <div class="firma-nombre">Proponente / Ejecutor</div>
+      <div class="firma-cargo">Agencia especializada in-house<br>Diseño, tecnología y producción física</div>
+    </div>
+    <div class="firma-item">
+      <div class="firma-nombre">Supervisora del contrato</div>
+      <div class="firma-cargo">Secretaría de la Mujer<br>Municipio de Envigado</div>
+    </div>
+    <div class="firma-item">
+      <div class="firma-nombre">Fecha de presentación</div>
+      <div class="firma-cargo">Envigado, Antioquia<br>Colombia — 2025</div>
+    </div>
+  </div>
+
+</div><!-- /documento -->
+
+<!-- HOJA DE PRESUPUESTO FINAL -->
+<div class="hoja-presupuesto">
+  <div class="titulo-hoja">Estructura de costos</div>
+  <div class="subtitulo-hoja">Valor global por componente — Proyecto TERRITORIO SEGURO · Municipio de Envigado</div>
+
+  <div class="presupuesto-items">
+
+    <div class="pres-item">
+      <div class="pres-item-left">
+        <h4>Equipo profesional y operación de campo</h4>
+        <p>El componente de mayor peso del proyecto. Comprende los honorarios del equipo completo durante los 4 meses de ejecución: psicóloga principal, coordinadora pedagógica, director creativo y desarrollador de sistemas. Incluye también todos los gastos operativos de campo: desplazamientos, alistamiento previo a cada jornada, registro de evidencias, redacción de actas y seguimiento post-jornada. <strong>Es el núcleo del proyecto: sin el equipo humano, no hay intervención.</strong></p>
+        <div class="pres-barra"><div class="pres-barra-fill" style="width: 100%;"></div></div>
+      </div>
+      <div class="pres-item-right">
+        <div class="pres-valor">$28.000.000</div>
+        <div class="pres-porcentaje">35% del total</div>
+      </div>
+    </div>
+
+    <div class="pres-item">
+      <div class="pres-item-left">
+        <h4>Dirección de arte, diseño editorial y materiales impresos</h4>
+        <p>Desarrollo del sistema de identidad visual TERRITORIO SEGURO, diseño y producción editorial de la Bitácora de Límites y Amor Propio (1.300 ejemplares), materiales de jornada (cartel institucional, presentación proyectable, plantillas de redes), e impresión de los 13 informes técnicos encuadernados. Cada pieza producida es de nivel internacional y representa con dignidad a la Secretaría de la Mujer.</p>
+        <div class="pres-barra"><div class="pres-barra-fill" style="width: 75%;"></div></div>
+      </div>
+      <div class="pres-item-right">
+        <div class="pres-valor">$14.400.000</div>
+        <div class="pres-porcentaje">18% del total</div>
+      </div>
+    </div>
+
+    <div class="pres-item">
+      <div class="pres-item-left">
+        <h4>Producción de kits físicos Kokito Star® (1.300 unidades)</h4>
+        <p>Fabricación y empaque de los 1.300 kits individuales de autocuidado: tatuajes temporales con glitter de grado cosmético, pegamento dérmico seguro, stencils de diseño abstracto y empaque individual con branding institucional. Cada kit es un entregable físico con propósito pedagógico documentado y un instrumento de visibilidad del proyecto en el entorno familiar de cada niña.</p>
+        <div class="pres-barra"><div class="pres-barra-fill" style="width: 60%;"></div></div>
+      </div>
+      <div class="pres-item-right">
+        <div class="pres-valor">$12.800.000</div>
+        <div class="pres-porcentaje">16% del total</div>
+      </div>
+    </div>
+
+    <div class="pres-item">
+      <div class="pres-item-left">
+        <h4>Desarrollo y operación del sistema digital de supervisión</h4>
+        <p>Desarrollo de la plataforma interna de seguimiento contractual (panel del supervisor, test digital, base de datos de jornadas y generación de informes), hosting y dominio durante la vigencia del proyecto. Herramienta que garantiza trazabilidad total ante el supervisor y los organismos de control, y reduce el riesgo de inconsistencias en los soportes de ejecución.</p>
+        <div class="pres-barra"><div class="pres-barra-fill" style="width: 45%;"></div></div>
+      </div>
+      <div class="pres-item-right">
+        <div class="pres-valor">$8.800.000</div>
+        <div class="pres-porcentaje">11% del total</div>
+      </div>
+    </div>
+
+    <div class="pres-item secundario">
+      <div class="pres-item-left">
+        <h4>AIU — Administración, Imprevistos y Utilidad (25%)</h4>
+        <p>Aplicado sobre los costos directos conforme a la normativa de contratación estatal colombiana. Cubre administración general del proyecto (10%), imprevistos de ejecución (5%) y utilidad del proponente (10%).</p>
+        <div class="pres-barra"><div class="pres-barra-fill" style="width: 50%; background: rgba(255,255,255,0.3);"></div></div>
+      </div>
+      <div class="pres-item-right">
+        <div class="pres-valor">$16.000.000</div>
+        <div class="pres-porcentaje">20% del total</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="presupuesto-total">
+    <div>
+      <div class="total-label">Valor total del proyecto</div>
+      <div class="total-valor">$80.000.000</div>
+    </div>
+    <div class="total-nota">
+      Pesos colombianos (COP) · Incluye AIU del 25% · Vigencia de ejecución: 4 meses · Mínimo 12 instituciones educativas · 1.200+ beneficiarias directas
+    </div>
+  </div>
+
+  <div class="chart-pres">
+    <div class="chart-pres-titulo">Distribución del presupuesto por componente</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; font-size: 12px; color: rgba(255,255,255,0.5);">
+      <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;background:#C8436A;display:inline-block;"></span>Equipo y operación $28M</span>
+      <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;background:#B58A4A;display:inline-block;"></span>Arte y editorial $14.4M</span>
+      <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;background:#6A6A6A;display:inline-block;"></span>Kits físicos $12.8M</span>
+      <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;background:#3A6A9A;display:inline-block;"></span>Sistema digital $8.8M</span>
+      <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;background:#4A4A4A;display:inline-block;"></span>AIU $16M</span>
+    </div>
+    <div style="position:relative;width:100%;height:220px;">
+      <canvas id="chartFinal" role="img" aria-label="Distribución final del presupuesto"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- PIE -->
+<div class="pie-doc">
+  <div class="pie-grid">
+    <div class="pie-bloque">
+      <h4>Proyecto</h4>
+      <strong>TERRITORIO SEGURO</strong>
+      <p>Intervención psicosocial itinerante para niñas y adolescentes de Envigado. Prevención de violencias escolares y digitales.</p>
+    </div>
+    <div class="pie-bloque">
+      <h4>Entidad contratante</h4>
+      <strong>Secretaría de la Mujer</strong>
+      <p>Municipio de Envigado, Antioquia<br>Valle de Aburrá — Colombia</p>
+    </div>
+    <div class="pie-bloque">
+      <h4>Entregables clave</h4>
+      <p>12 informes técnicos por colegio<br>1 informe consolidado de política pública<br>1.300 bitácoras editoriales<br>1.300 kits Kokito Star®<br>Panel de supervisión contractual</p>
+    </div>
+  </div>
+  <div class="pie-bottom">
+    <span>Propuesta Técnica y Financiera — TERRITORIO SEGURO — Envigado 2025</span>
+    <span>$80.000.000 COP · 1.200+ beneficiarias · 12 instituciones educativas</span>
+  </div>
+</div>
+
+<script>
+  new Chart(document.getElementById('chartFinal'), {
+    type: 'bar',
+    data: {
+      labels: ['Equipo y operación', 'Arte y editorial', 'Kits físicos', 'Sistema digital', 'AIU'],
+      datasets: [{
+        data: [28, 14.4, 12.8, 8.8, 16],
+        backgroundColor: ['#C8436A','#B58A4A','#6A6A6A','#3A6A9A','#4A4A4A'],
+        borderRadius: 3,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: (ctx) => ' $' + ctx.parsed.y + 'M COP' } }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 12 } }
+        },
+        y: {
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { callback: (v) => '$' + v + 'M', color: 'rgba(255,255,255,0.5)', font: { size: 11 } }
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>
